@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DHT Readings</title>
+  <style type="text/css">
+    body {
+      background-color: #F5F5F5;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .data-container {
+      display: flex;
+      justify-content: space-between;
+      width: 50%;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #FFF;
+      box-shadow: 0 2px 20px rgba(0, 0, 0,0.1);
+      border-radius: 10px;
+    }
+    .data-item {
+      text-align: center;
+    }
+    .data-item h2 {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .data-item p {
+      font-size: 48px;
+      font-weight: bold;
+      color: #6EB7FF;
+    }
+    .data-head {
+      margin: auto;
+      width: 50%;
+      text-align: center;
+      font-size: 45px;
+      font-weight: bold;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #FFF;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      border-radius: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="data-head">DHT Sensor Realtime Readings</div>
+
+  <div class="data-container">
+    <div class="data-item">
+      <h2>Temperature</h2>
+      <p class="value" id="temperature">22 &#8451;</p>
+    </div>
+    <div class="data-item">
+      <h2>Humidity</h2>
+      <p class="value" id="humidity">10%</p>
+    </div>
+  </div>
+
+  <!-- Firebase v8 scripts -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+
+  <script>
+    // Your Firebase configuration (same as before)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCufdu4avr1VDm_vVqN0Rx5uOUAcArUp3Y",
+      authDomain: "thesiseto.firebaseapp.com",
+      databaseURL: "https://thesiseto-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "thesiseto",
+      storageBucket: "thesiseto.appspot.com",
+      messagingSenderId: "986260488204",
+      appId: "1:986260488204:web:7e58f5faf4bcf9becb6e29"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Reference to Firebase database
+    var database = firebase.database();
+
+    // Get real-time data for humidity
+    var dataRef1 = database.ref('DHT_11/Humidity');
+    dataRef1.on('value', function(getdata1) {
+      var humi = getdata1.val();
+      document.getElementById('humidity').innerHTML = humi + "%";
+    });
+
+    // Get real-time data for temperature
+    var dataRef2 = database.ref('DHT_11/Temperature');
+    dataRef2.on('value', function(getdata2) {
+      var temp = getdata2.val();
+      document.getElementById('temperature').innerHTML = temp + "&#8451;";
+    });
+  </script>
+
+</body>
+</html>
