@@ -6,8 +6,8 @@
   <title>Evapotranspiration System</title>
   <style>
     body {
-      background-color: #2C2C2C; /* Dark background */
-      font-family: 'Comic Sans MS', sans-serif; /* Matching font style */
+      background-color: #2C2C2C;
+      font-family: 'Comic Sans MS', sans-serif;
       margin: 0;
       padding: 0;
       color: white;
@@ -20,28 +20,27 @@
 
     .container {
       text-align: center;
-      border: 2px solid white; /* Border around main container */
+      border: 2px solid white;
       padding: 20px;
-      width: 80%; /* Adjust width as needed */
-      max-width: 600px; /* To keep the layout compact */
+      width: 90%;
+      max-width: 600px;
     }
 
     .heading {
       font-size: 30px;
       font-weight: bold;
       margin-bottom: 30px;
-      border: 2px solid white; /* Border around heading */
+      border: 2px solid white;
       padding: 10px;
       display: inline-block;
     }
 
-    /* ETo Title Section */
     .eto-title {
-      background-color: #A05A2C; /* Orange background */
+      background-color: #A05A2C;
       padding: 15px;
       border-radius: 5px;
       margin-bottom: 10px;
-      border: 2px solid white; /* Border around ETo title */
+      border: 2px solid white;
     }
 
     .eto-title h2 {
@@ -49,13 +48,12 @@
       margin: 0;
     }
 
-    /* ETo Value Section */
     .eto-value {
-      background-color: #A05A2C; /* Orange background */
+      background-color: #A05A2C;
       padding: 15px;
       border-radius: 5px;
       margin-bottom: 30px;
-      border: 2px solid white; /* Border around ETo value */
+      border: 2px solid white;
     }
 
     .eto-value p {
@@ -68,8 +66,8 @@
       font-size: 20px;
       margin-bottom: 10px;
       padding: 10px;
-      background-color: #1B4D67; /* Blue header for sensors */
-      border: 2px solid white; /* Border around sensor header */
+      background-color: #1B4D67;
+      border: 2px solid white;
       border-radius: 5px;
     }
 
@@ -81,11 +79,11 @@
     }
 
     .sensor-box {
-      background-color: #2C2C2C; /* Keep background matching main */
+      background-color: #2C2C2C;
       padding: 20px;
       border-radius: 5px;
       text-align: center;
-      border: 2px solid white; /* White border for sensor boxes */
+      border: 2px solid white;
       flex: 1;
       margin: 0 10px;
     }
@@ -100,7 +98,41 @@
       font-weight: bold;
     }
 
-    /* Ensuring container fits properly */
+    /* Style for the Rs input section */
+    .customize-rs-section {
+      margin-top: 30px;
+      padding: 15px;
+      background-color: #2C2C2C;
+      border-radius: 5px;
+      border: 2px solid white;
+    }
+
+    .input-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .input-container input {
+      margin: 10px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 2px solid white;
+      width: 200px;
+    }
+
+    .input-container button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #A05A2C;
+      border: 2px solid white;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
     @media (max-width: 500px) {
       .sensor-container {
         flex-direction: column;
@@ -110,11 +142,16 @@
         margin-bottom: 10px;
         width: 100%;
       }
+      .input-container {
+        flex-direction: column;
+      }
+      .input-container input {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
-
   <div class="container">
     <!-- Main Heading -->
     <div class="heading">IoT-BASED PORTABLE EVAPOTRANSPIRATION SYSTEM</div>
@@ -126,7 +163,7 @@
 
     <!-- ETo Value Section -->
     <div class="eto-value">
-      <p id="eto">-- mm/day</p> <!-- Placeholder for ETo value -->
+      <p id="eto">-- mm/day</p>
     </div>
 
     <!-- Sensor Data Header -->
@@ -138,11 +175,23 @@
     <div class="sensor-container">
       <div class="sensor-box">
         <h2>Temperature</h2>
-        <p id="temperature">-- &#8451;</p> <!-- Placeholder for Temperature -->
+        <p id="temperature">-- &#8451;</p>
       </div>
       <div class="sensor-box">
         <h2>Humidity</h2>
-        <p id="humidity">--%</p> <!-- Placeholder for Humidity -->
+        <p id="humidity">--%</p>
+      </div>
+    </div>
+
+    <!-- Customize Rs Value Section -->
+    <div class="customize-rs-section">
+      <div class="sensor-header">
+        Customize Rs Value
+      </div>
+      <div class="input-container">
+        <label for="customRs">Enter Rs value:</label>
+        <input type="number" id="customRs" value="38.44" step="0.01">
+        <button onclick="updateRs()">Update Rs</button>
       </div>
     </div>
   </div>
@@ -152,7 +201,6 @@
   <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
 
   <script>
-    // Your Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyCufdu4avr1VDm_vVqN0Rx5uOUAcArUp3Y",
       authDomain: "thesiseto.firebaseapp.com",
@@ -163,62 +211,62 @@
       appId: "1:986260488204:web:7e58f5faf4bcf9becb6e29"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
-    // Reference to Firebase database
     var database = firebase.database();
-
-    // Get real-time data for humidity
     var dataRef1 = database.ref('DHT_11/Humidity');
+    var dataRef2 = database.ref('DHT_11/Temperature');
+    let Rs = 38.44009; // Default Rs value in MJ
+    let Tmax = -Infinity, Tmin = Infinity;
+
     dataRef1.on('value', function(getdata1) {
       var humi = getdata1.val();
       document.getElementById('humidity').innerHTML = humi + "%";
-      calculateETo(); // Update ETo when humidity changes
+      calculateETo();
     });
 
-    // Get real-time data for temperature
-    var dataRef2 = database.ref('DHT_11/Temperature');
-    var Tmax = -Infinity, Tmin = Infinity; // Initialize Tmax and Tmin
     dataRef2.on('value', function(getdata2) {
       var temp = getdata2.val();
       document.getElementById('temperature').innerHTML = temp + "&#8451;";
-      Tmax = Math.max(Tmax, temp); // Update Tmax
-      Tmin = Math.min(Tmin, temp); // Update Tmin
-      calculateETo(); // Update ETo when temperature changes
+      Tmax = Math.max(Tmax, temp);
+      Tmin = Math.min(Tmin, temp);
+      calculateETo();
     });
 
-    // Function to calculate Ra (Extraterrestrial radiation)
     function calculateRa() {
-      const Gsc = 0.0820; // Solar constant (MJ m-2 min-1)
-      const latRad = 14.19775 * (Math.PI / 180); // Convert latitude to radians
-      const doy = new Date().getDay(); // Day of the year (simplified)
+      const Gsc = 0.0820;
+      const latRad = 14.19775 * (Math.PI / 180);
+      const doy = new Date().getDay();
       const dr = 1 + 0.033 * Math.cos((2 * Math.PI / 365) * doy);
       const delta = 0.409 * Math.sin((2 * Math.PI / 365) * doy - 1.39);
       const omega = Math.acos(-Math.tan(latRad) * Math.tan(delta));
-      const Ra = (24 * 60 / Math.PI) * Gsc * dr * (omega * Math.sin(latRad) * Math.sin(delta) + Math.cos(latRad) * Math.cos(delta) * Math.sin(omega));
-      return Ra; // in MJ m-2 day-1
+      return (24 * 60 / Math.PI) * Gsc * dr * (omega * Math.sin(latRad) * Math.sin(delta) + Math.cos(latRad) * Math.cos(delta) * Math.sin(omega));
     }
 
-    // Function to calculate ETo using the Valiantzas Method 4
     function calculateETo() {
       const alpha = 0.25;
-      const Rs = 38.44009; // (not the final value)
       const Ra = calculateRa();
-      const RH = parseFloat(document.getElementById('humidity').innerHTML); // Get RH from Firebase
-      const Tmean = (Tmax + Tmin) / 2; // Calculate mean temperature
-      const u2 = 3.88925; // Assuming wind speed at 2 m (m/s)
-      const z = 303; // Altitude (m)
+      const RH = parseFloat(document.getElementById('humidity').innerHTML) || 0;
+      const Tmean = (Tmax + Tmin) / 2 || 0;
+      const u2 = 3.88925;
+      const z = 303;
 
-      // ETo = 0.051(1 − α) Rs(Tmean + 9.5)0.5 − 2.4 (Rs/Ra)2 + 0.048(Tmean + 20) (1 – RH/100) (0.5 + 0.536 u2) + 0.00012z
       const ETo = 0.051 * (1 - alpha) * Rs * Math.sqrt(Tmean + 9.5) - 2.4 * Math.pow(Rs / Ra, 2) +
                   0.048 * (Tmean + 20) * (1 - RH / 100) * (0.5 + 0.536 * u2) + 0.00012 * z;
 
-      // Display ETo result
       document.getElementById('eto').innerHTML = ETo.toFixed(2) + " mm/day";
     }
 
+    function updateRs() {
+      const inputRs = parseFloat(document.getElementById('customRs').value);
+      if (!isNaN(inputRs)) {
+        Rs = inputRs; // Directly update Rs
+        alert(`Rs value updated to ${Rs.toFixed(2)} MJ`);
+        calculateETo();
+      } else {
+        alert('Please enter a valid Rs value.');
+      }
+    }
   </script>
-
 </body>
 </html>
