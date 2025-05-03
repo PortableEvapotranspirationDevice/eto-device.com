@@ -235,8 +235,8 @@
 
   function calculateETo() {
   const RH = parseFloat(document.getElementById('humidity').innerHTML) || 0;
-  const Tmean = (Tmax + Tmin) / 2 || 0;
-  const latRad = 14.19775 * (Math.PI / 180); // Latitude in radians
+  const Tmean = (Tmax + Tmin) / 2;
+  const latRad = 0.2477974839; // Latitude in radians
 
   // Valiantzas Method 2 formula
   const term1 = 0.0393 * Rs * Math.sqrt(Tmean + 9.5);
