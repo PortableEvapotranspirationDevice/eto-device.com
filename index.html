@@ -233,29 +233,20 @@
       calculateETo();
     });
 
-    function calculateRa() {
-      const Gsc = 0.0820;
-      const latRad = 14.19775 * (Math.PI / 180);
-      const doy = new Date().getDay();
-      const dr = 1 + 0.033 * Math.cos((2 * Math.PI / 365) * doy);
-      const delta = 0.409 * Math.sin((2 * Math.PI / 365) * doy - 1.39);
-      const omega = Math.acos(-Math.tan(latRad) * Math.tan(delta));
-      return (24 * 60 / Math.PI) * Gsc * dr * (omega * Math.sin(latRad) * Math.sin(delta) + Math.cos(latRad) * Math.cos(delta) * Math.sin(omega));
-    }
+  function calculateETo() {
+  const RH = parseFloat(document.getElementById('humidity').innerHTML) || 0;
+  const Tmean = (Tmax + Tmin) / 2 || 0;
+  const latRad = 14.19775 * (Math.PI / 180); // Latitude in radians
 
-    function calculateETo() {
-      const alpha = 0.25;
-      const Ra = calculateRa();
-      const RH = parseFloat(document.getElementById('humidity').innerHTML) || 0;
-      const Tmean = (Tmax + Tmin) / 2 || 0;
-      const u2 = 3.88925;
-      const z = 303;
+  // Valiantzas Method 2 formula
+  const term1 = 0.0393 * Rs * Math.sqrt(Tmean + 9.5);
+  const term2 = 0.19 * Math.pow(Rs, 0.6) * Math.pow(latRad, 0.15);
+  const term3 = 0.078 * (Tmean + 20) * (1 - RH / 100);
 
-      const ETo = 0.051 * (1 - alpha) * Rs * Math.sqrt(Tmean + 9.5) - 2.4 * Math.pow(Rs / Ra, 2) +
-                  0.048 * (Tmean + 20) * (1 - RH / 100) * (0.5 + 0.536 * u2) + 0.00012 * z;
+  const ETo = term1 - term2 + term3;
 
-      document.getElementById('eto').innerHTML = ETo.toFixed(2) + " mm/day";
-    }
+  document.getElementById('eto').innerHTML = ETo.toFixed(2) + " mm/day";
+}
 
     function updateRs() {
       const inputRs = parseFloat(document.getElementById('customRs').value);
