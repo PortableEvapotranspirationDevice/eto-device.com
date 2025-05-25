@@ -219,7 +219,7 @@
       const term2 = 0.19 * Math.pow(Rs, 0.6) * Math.pow(latRad, 0.15);
       const term3 = 0.078 * (Tmean + 20) * (1 - RH / 100);
 
-      const ETo = term1 - term2 + term3;
+      const ETo = term1 - term2 + term3 - 4;
 
       document.getElementById('eto').innerHTML = ETo.toFixed(2) + " mm/day";
     }
