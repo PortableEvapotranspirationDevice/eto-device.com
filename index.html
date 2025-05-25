@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Evapotranspiration System</title>
   <style>
     body {
@@ -52,18 +52,19 @@
       background-color: #A05A2C;
       padding: 15px;
       border-radius: 5px;
-      margin-bottom: 30px;
+      margin-bottom: 10px;
       border: 2px solid white;
     }
 
     .eto-value p {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: bold;
       margin: 0;
     }
 
-    .sensor-header {
+    .section-header {
       font-size: 20px;
+      margin-top: 20px;
       margin-bottom: 10px;
       padding: 10px;
       background-color: #1B4D67;
@@ -98,39 +99,24 @@
       font-weight: bold;
     }
 
-    /* Style for the Rs input section */
-    .customize-rs-section {
-      margin-top: 30px;
-      padding: 15px;
+    .rs-value-box {
       background-color: #2C2C2C;
+      padding: 20px;
       border-radius: 5px;
+      text-align: center;
       border: 2px solid white;
+      margin-top: 10px;
     }
 
-    .input-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    .rs-value-box h2 {
+      font-size: 18px;
       margin-bottom: 10px;
     }
 
-    .input-container input {
-      margin: 10px;
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: 2px solid white;
-      width: 200px;
-    }
-
-    .input-container button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #A05A2C;
-      border: 2px solid white;
-      color: white;
-      cursor: pointer;
-      border-radius: 5px;
+    .rs-value-box p {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 0;
     }
 
     @media (max-width: 500px) {
@@ -142,36 +128,23 @@
         margin-bottom: 10px;
         width: 100%;
       }
-      .input-container {
-        flex-direction: column;
-      }
-      .input-container input {
-        width: 100%;
-      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Main Heading -->
     <div class="heading">IoT-BASED PORTABLE EVAPOTRANSPIRATION SYSTEM</div>
-    
-    <!-- ETo Title Section -->
+
     <div class="eto-title">
       <h2>EVAPOTRANSPIRATION MEASUREMENT (ETo)</h2>
     </div>
 
-    <!-- ETo Value Section -->
     <div class="eto-value">
       <p id="eto">-- mm/day</p>
     </div>
 
-    <!-- Sensor Data Header -->
-    <div class="sensor-header">
-      DHT SENSOR REALTIME READINGS
-    </div>
+    <div class="section-header">DHT SENSOR REALTIME READINGS</div>
 
-    <!-- Sensor Data Section -->
     <div class="sensor-container">
       <div class="sensor-box">
         <h2>Temperature</h2>
@@ -183,20 +156,14 @@
       </div>
     </div>
 
-    <!-- Customize Rs Value Section -->
-    <div class="customize-rs-section">
-      <div class="sensor-header">
-        Solar Radiation Value (MJ/m<sup>2</sup>/day)
-      </div>
-      <div class="input-container">
-        <label for="customRs">Enter Rs value:</label>
-        <input type="number" id="customRs" value="38.44" step="0.01">
-        <button onclick="updateRs()">Update Rs</button>
-      </div>
+    <div class="section-header">SOLAR RADIATION VALUE (MJ/m²/day)</div>
+
+    <div class="rs-value-box">
+      <p id="rs">--</p>
     </div>
   </div>
 
-  <!-- Firebase v8 scripts -->
+  <!-- Firebase scripts -->
   <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
 
@@ -213,51 +180,63 @@
 
     firebase.initializeApp(firebaseConfig);
 
-    var database = firebase.database();
-    var dataRef1 = database.ref('DHT_11/Humidity');
-    var dataRef2 = database.ref('DHT_11/Temperature');
-    let Rs = 38.44009; // Default Rs value in MJ
+    const database = firebase.database();
+    const dataRef1 = database.ref('DHT_11/Humidity');
+    const dataRef2 = database.ref('DHT_11/Temperature');
+
     let Tmax = -Infinity, Tmin = Infinity;
 
-    dataRef1.on('value', function(getdata1) {
-      var humi = getdata1.val();
+    const dailyRsValues = {
+      "May-24": 38.35651, "May-25": 38.34594, "May-26": 38.33519, "May-27": 38.3243,
+      "May-28": 38.31331, "May-29": 38.30225, "May-30": 38.29116, "May-31": 38.28007,
+      "Jun-01": 38.26902, "Jun-02": 38.25803, "Jun-03": 38.24714, "Jun-04": 38.23638,
+      "Jun-05": 38.22578, "Jun-06": 38.21536, "Jun-07": 38.20515, "Jun-08": 38.19517,
+      "Jun-09": 38.18546, "Jun-10": 38.17601, "Jun-11": 38.16687, "Jun-12": 38.15805,
+      "Jun-13": 38.14955, "Jun-14": 38.14141, "Jun-15": 38.13363, "Jun-16": 38.12623,
+      "Jun-17": 38.11921, "Jun-18": 38.11258, "Jun-19": 38.10636, "Jun-20": 38.10054,
+      "Jun-21": 38.09015, "Jun-22": 38.09015, "Jun-23": 38.08557, "Jun-24": 38.08141
+    };
+
+    function getTodayKey() {
+      const now = new Date();
+      const month = now.toLocaleString('default', { month: 'short' });
+      const day = now.getDate().toString().padStart(2, '0');
+      return `${month}-${day}`;
+    }
+
+    function calculateETo() {
+      const RH = parseFloat(document.getElementById('humidity').innerHTML) || 0;
+      const Tmean = (Tmax + Tmin) / 2 || 0;
+      const latRad = 14.19775 * (Math.PI / 180); // Latitude in radians
+
+      const todayKey = getTodayKey();
+      const Rs = dailyRsValues[todayKey] || 38.44009;
+
+      // Update Rs display
+      document.getElementById('rs').textContent = Rs.toFixed(5);
+
+      const term1 = 0.0393 * Rs * Math.sqrt(Tmean + 9.5);
+      const term2 = 0.19 * Math.pow(Rs, 0.6) * Math.pow(latRad, 0.15);
+      const term3 = 0.078 * (Tmean + 20) * (1 - RH / 100);
+
+      const ETo = term1 - term2 + term3;
+
+      document.getElementById('eto').innerHTML = ETo.toFixed(2) + " mm/day";
+    }
+
+    dataRef1.on('value', function(snapshot) {
+      const humi = snapshot.val();
       document.getElementById('humidity').innerHTML = humi + "%";
       calculateETo();
     });
 
-    dataRef2.on('value', function(getdata2) {
-      var temp = getdata2.val();
+    dataRef2.on('value', function(snapshot) {
+      const temp = snapshot.val();
       document.getElementById('temperature').innerHTML = temp + "&#8451;";
       Tmax = Math.max(Tmax, temp);
       Tmin = Math.min(Tmin, temp);
       calculateETo();
     });
-
-    function calculateETo() {
-  const RH = parseFloat(document.getElementById('humidity').innerHTML) || 0;
-  const Tmean = (Tmax + Tmin) / 2 || 0;
-  const latRad = 14.19775 * (Math.PI / 180); // Latitude in radians
-
-  // Valiantzas Method 2 formula
-  const term1 = 0.0393 * Rs * Math.sqrt(Tmean + 9.5);
-  const term2 = 0.19 * Math.pow(Rs, 0.6) * Math.pow(latRad, 0.15);
-  const term3 = 0.078 * (Tmean + 20) * (1 - RH / 100);
-
-  const ETo = term1 - term2 + term3;
-
-  document.getElementById('eto').innerHTML = ETo.toFixed(2) + " mm/day";
-}
-
-    function updateRs() {
-      const inputRs = parseFloat(document.getElementById('customRs').value);
-      if (!isNaN(inputRs)) {
-        Rs = inputRs; // Directly update Rs
-        alert(`Rs value updated to ${Rs.toFixed(2)} MJ`);
-        calculateETo();
-      } else {
-        alert('Please enter a valid Rs value.');
-      }
-    }
   </script>
 </body>
 </html>
