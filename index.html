@@ -92,6 +92,7 @@
 
     .customize-rs-section {
       margin-top: 12px;
+      margin-bottom: 12px;
       padding: 8px;
       background-color: #2C2C2C;
       border-radius: 5px;
@@ -100,31 +101,30 @@
 
     .input-container {
       display: flex;
-      flex-direction: column;
-      align-items: stretch;
+      justify-content: center;
+      align-items: center;
       margin-bottom: 6px;
+      flex-wrap: wrap;
     }
 
-    .input-container label {
-      margin-bottom: 4px;
-      font-size: 14px;
-    }
-
-    .input-container input,
-    .input-container button {
+    .input-container input {
+      margin: 4px;
       padding: 7px;
       font-size: 14px;
       border-radius: 5px;
       border: 2px solid white;
-      margin-bottom: 6px;
-      width: 100%;
-      box-sizing: border-box;
+      width: 150px;
     }
 
     .input-container button {
+      padding: 7px 14px;
+      font-size: 13px;
       background-color: #A05A2C;
+      border: 2px solid white;
       color: white;
       cursor: pointer;
+      border-radius: 5px;
+      margin: 4px;
     }
 
     @media (max-width: 500px) {
@@ -136,6 +136,22 @@
       .sensor-box {
         margin-bottom: 6px;
         width: 100%;
+      }
+
+      .input-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .input-container input,
+      .input-container button {
+        width: 100%;
+      }
+
+      .input-container label {
+        width: 100%;
+        text-align: left;
+        margin-bottom: 4px;
       }
     }
   </style>
@@ -236,7 +252,7 @@
       const term1 = 0.0393 * Rs * Math.sqrt(Tmean + 9.5);
       const term2 = 0.19 * Math.pow(Rs, 0.6) * Math.pow(latRad, 0.15);
       const term3 = 0.078 * (Tmean + 20) * (1 - RH / 100);
-      const ETo = term1 - term2 + term3 - 4;
+      const ETo = term1 - term2 + term3 - 4; // subtract 4 as requested
 
       document.getElementById('eto').innerHTML = ETo.toFixed(2) + " mm/day";
     }
