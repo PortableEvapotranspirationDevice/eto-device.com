@@ -4,148 +4,157 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Evapotranspiration System</title>
-<style>
-  body {
-    background-color: #2C2C2C;
-    font-family: 'Comic Sans MS', sans-serif;
-    margin: 0;
-    padding: 0;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-  }
-
-  .container {
-    text-align: center;
-    border: 2px solid white;
-    padding: 8px;
-    width: 95%;
-    max-width: 480px;
-    box-sizing: border-box;
-  }
-
-  .heading {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 12px;
-    border: 2px solid white;
-    padding: 6px;
-  }
-
-  .eto-title, .eto-value {
-    background-color: #A05A2C;
-    padding: 8px;
-    border-radius: 5px;
-    margin-bottom: 8px;
-    border: 2px solid white;
-  }
-
-  .eto-title h2 {
-    font-size: 16px;
-    margin: 0;
-  }
-
-  .eto-value p {
-    font-size: 20px;
-    font-weight: bold;
-    margin: 0;
-  }
-
-  .sensor-header {
-    font-size: 16px;
-    margin-bottom: 6px;
-    padding: 6px;
-    background-color: #1B4D67;
-    border: 2px solid white;
-    border-radius: 5px;
-  }
-
-  .sensor-container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-top: 6px;
-  }
-
-  .sensor-box {
-    background-color: #2C2C2C;
-    padding: 10px;
-    border-radius: 5px;
-    text-align: center;
-    border: 2px solid white;
-    flex: 1;
-    margin: 0 4px;
-  }
-
-  .sensor-box h2 {
-    font-size: 15px;
-    margin-bottom: 4px;
-  }
-
-  .sensor-box p {
-    font-size: 18px;
-    font-weight: bold;
-  }
-
-  .customize-rs-section {
-    margin-top: 12px;
-    padding: 8px;
-    background-color: #2C2C2C;
-    border-radius: 5px;
-    border: 2px solid white;
-  }
-
-  .input-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 6px;
-    flex-wrap: wrap;
-  }
-
-  .input-container input {
-    margin: 4px;
-    padding: 7px;
-    font-size: 14px;
-    border-radius: 5px;
-    border: 2px solid white;
-    width: 150px;
-  }
-
-  .input-container button {
-    padding: 7px 14px;
-    font-size: 13px;
-    background-color: #A05A2C;
-    border: 2px solid white;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-    margin: 4px;
-  }
-
-  @media (max-width: 500px) {
-    .sensor-container {
+  <style>
+    body {
+      background-color: #2C2C2C;
+      font-family: 'Comic Sans MS', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: white;
+      display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      text-align: center;
+      border: 2px solid white;
+      padding: 8px;
+      width: 95%;
+      max-width: 480px;
+      box-sizing: border-box;
+    }
+
+    .heading {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 12px;
+      border: 2px solid white;
+      padding: 6px;
+    }
+
+    .eto-title, .eto-value {
+      background-color: #A05A2C;
+      padding: 8px;
+      border-radius: 5px;
+      margin-bottom: 8px;
+      border: 2px solid white;
+    }
+
+    .eto-title h2 {
+      font-size: 16px;
+      margin: 0;
+    }
+
+    .eto-value p {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .sensor-header {
+      font-size: 16px;
+      margin-bottom: 6px;
+      padding: 6px;
+      background-color: #1B4D67;
+      border: 2px solid white;
+      border-radius: 5px;
+    }
+
+    .sensor-container {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-top: 6px;
     }
 
     .sensor-box {
-      margin-bottom: 6px;
-      width: 100%;
+      background-color: #2C2C2C;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+      border: 2px solid white;
+      flex: 1;
+      margin: 0 4px;
+    }
+
+    .sensor-box h2 {
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .sensor-box p {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .customize-rs-section {
+      margin-top: 12px;
+      margin-bottom: 12px;
+      padding: 8px;
+      background-color: #2C2C2C;
+      border-radius: 5px;
+      border: 2px solid white;
     }
 
     .input-container {
-      flex-direction: column;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
     }
 
     .input-container input {
-      width: 100%;
+      margin: 4px;
+      padding: 7px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: 2px solid white;
+      width: 150px;
     }
-  }
-</style>
+
+    .input-container button {
+      padding: 7px 14px;
+      font-size: 13px;
+      background-color: #A05A2C;
+      border: 2px solid white;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+      margin: 4px;
+    }
+
+    @media (max-width: 500px) {
+      .sensor-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .sensor-box {
+        margin-bottom: 6px;
+        width: 100%;
+      }
+
+      .input-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .input-container input,
+      .input-container button {
+        width: 100%;
+      }
+
+      .input-container label {
+        width: 100%;
+        text-align: left;
+        margin-bottom: 4px;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="container">
